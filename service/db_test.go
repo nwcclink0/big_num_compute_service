@@ -17,7 +17,7 @@ func initTest() {
 	InitDb()
 }
 
-func TestCreateObj(t *testing.T) {
+func TestCreateAndDeleteObj(t *testing.T) {
 	initTest()
 	err := CreateObj("my_weight", 92)
 	if err != nil {
@@ -25,15 +25,6 @@ func TestCreateObj(t *testing.T) {
 		return
 	}
 	err = DeleteObj("my_weight")
-	if err != nil {
-		t.Errorf("can't delete num obj")
-		return
-	}
-}
-
-func TestDeleteObj(t *testing.T) {
-	initTest()
-	err := DeleteObj("my_weight")
 	if err != nil {
 		t.Errorf("can't delete num obj")
 		return
@@ -82,6 +73,11 @@ func TestAddComputeWithNumber(t *testing.T) {
 	if err != nil {
 		t.Errorf("can't delete num obj")
 	}
+
+	result, err = Compute("my_weight", testValStr, AddOp)
+	if err == nil {
+		t.Errorf("my_weight still exist")
+	}
 }
 
 func TestAddComputeWithName(t *testing.T) {
@@ -99,6 +95,9 @@ func TestAddComputeWithName(t *testing.T) {
 		t.Errorf(err.Error())
 	}
 	result, err := Compute("my_weight", "dog_weight", AddOp)
+	if err != nil {
+		t.Errorf("cann't add op with my_weight and dog_weight")
+	}
 	t.Logf("Add compute result:%f", result)
 
 	actualResult, _ := big.NewFloat(myWeight).Add(big.NewFloat(myWeight), big.NewFloat(testVal)).Float64()
@@ -109,9 +108,21 @@ func TestAddComputeWithName(t *testing.T) {
 	if err != nil {
 		t.Errorf("can't delete num obj")
 	}
+
+	result, err = Compute("my_weight", "dog_weight", AddOp)
+
+	if err == nil {
+		t.Errorf("my_weight and dog_weight still exist")
+	}
+
 	err = DeleteObj("dog_weight")
 	if err != nil {
 		t.Errorf("can't delete num obj")
+	}
+
+	result, err = Compute("my_weight", "dog_weight", AddOp)
+	if err == nil {
+		t.Errorf("my_weight and dog_weight still exist")
 	}
 }
 
@@ -139,6 +150,11 @@ func TestSubtractComputeWithNumber(t *testing.T) {
 	err = DeleteObj("my_weight")
 	if err != nil {
 		t.Errorf("can't delete num obj")
+	}
+
+	result, err = Compute("my_weight", testValStr, SubtractOp)
+	if err == nil {
+		t.Errorf("my_weight still exist")
 	}
 }
 
@@ -172,9 +188,20 @@ func TestSubtractComputeWithName(t *testing.T) {
 	if err != nil {
 		t.Errorf("can't delete num obj")
 	}
+
+	result, err = Compute("my_weight", "dog_weight", SubtractOp)
+	if err == nil {
+		t.Errorf("my_weight still exist")
+	}
+
 	err = DeleteObj("dog_weight")
 	if err != nil {
 		t.Errorf("can't delete num obj")
+	}
+
+	result, err = Compute("my_weight", "dog_weight", SubtractOp)
+	if err == nil {
+		t.Errorf("my_weight still exist")
 	}
 }
 
@@ -184,7 +211,6 @@ func TestMultiplyComputeWithNumber(t *testing.T) {
 	err := CreateObj("my_weight", myWeight)
 	if err != nil {
 		t.Errorf("can't create num obj")
-		return
 	}
 	t.Logf("Test multiply")
 	testVal := 1.4399349834
@@ -202,6 +228,11 @@ func TestMultiplyComputeWithNumber(t *testing.T) {
 	err = DeleteObj("my_weight")
 	if err != nil {
 		t.Errorf("can't delete num obj")
+	}
+
+	result, err = Compute("my_weight", testValStr, MultiplyOp)
+	if err == nil {
+		t.Errorf("my_weight still exist")
 	}
 }
 
@@ -236,9 +267,20 @@ func TestMultiplyComputeWithName(t *testing.T) {
 	if err != nil {
 		t.Errorf("can't delete num obj")
 	}
+
+	result, err = Compute("my_weight", "dog_weight", MultiplyOp)
+	if err == nil {
+		t.Errorf("my_weight still exist")
+	}
+
 	err = DeleteObj("dog_weight")
 	if err != nil {
 		t.Errorf("can't delete num obj")
+	}
+
+	result, err = Compute("my_weight", "dog_weight", MultiplyOp)
+	if err == nil {
+		t.Errorf("dog_weight still exist")
 	}
 }
 
@@ -266,6 +308,10 @@ func TestDivideComputeNumber(t *testing.T) {
 	err = DeleteObj("my_weight")
 	if err != nil {
 		t.Errorf("can't delete num obj")
+	}
+	result, err = Compute("my_weight", testValStr, DivideOp)
+	if err == nil {
+		t.Errorf("my_weight still exist")
 	}
 }
 
@@ -300,8 +346,18 @@ func TestDivideComputeName(t *testing.T) {
 	if err != nil {
 		t.Errorf("can't delete num obj")
 	}
+	result, err = Compute("my_weight", "dog_weight", DivideOp)
+	if err == nil {
+		t.Errorf("my_weight still exist")
+	}
+
 	err = DeleteObj("dog_weight")
 	if err != nil {
 		t.Errorf("can't delete num obj")
+	}
+
+	result, err = Compute("my_weight", "dog_weight", DivideOp)
+	if err == nil {
+		t.Errorf("dog_weight still exist")
 	}
 }
