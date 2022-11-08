@@ -96,6 +96,9 @@ func Compute(numberArg1 string, numberArg2 string, operation string) (float64, e
 		result = db.First(&numberObj2, Number{
 			Name: numberArg2,
 		})
+		if result.Error != nil {
+			return 0, fmt.Errorf("name: " + numberArg2 + "didn't exist")
+		}
 		isNum = false
 	} else {
 		LogAccess.Debug("arg 2 is number")
