@@ -29,21 +29,22 @@ func TestBigNumCompute_Create_And_Delete(t *testing.T) {
 	}
 }
 
-func TestBigNumCompute_Delete(t *testing.T) {
-	initTest()
-	var arg = []string{"dog", "10"}
-	var result string
-	bigNumberCompute := BigNumCompute{}
-
-	arg = []string{"dog"}
-	err := bigNumberCompute.Delete(arg, &result)
-	if err != nil {
-		t.Errorf("can't deleteobject, error: %s", err)
-	}
-	if result != ResultSuccess {
-		t.Errorf("incorrect result: %s", result)
-	}
-}
+//// This test is for manual test, uncomment it if necessary
+//func TestBigNumCompute_Delete(t *testing.T) {
+//	initTest()
+//	var arg = []string{"dog", "10"}
+//	var result string
+//	bigNumberCompute := BigNumCompute{}
+//
+//	arg = []string{"dog"}
+//	err := bigNumberCompute.Delete(arg, &result)
+//	if err != nil {
+//		t.Errorf("can't deleteobject, error: %s", err)
+//	}
+//	if result != ResultSuccess {
+//		t.Errorf("incorrect result: %s", result)
+//	}
+//}
 
 func TestBigNumCompute_Update(t *testing.T) {
 	initTest()
