@@ -25,5 +25,6 @@ func main() {
 	}
 
 	service.InitDb()
+	service.InitWorker(service.BigNumComputeConf.Core.WorkerNum, service.BigNumComputeConf.Core.QueueNum)
 	service.Run()
 }

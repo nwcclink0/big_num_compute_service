@@ -2,7 +2,6 @@ package service
 
 import (
 	"big_num_compute_service/rpc"
-	"big_num_compute_service/rpc/jsonrpc"
 	"fmt"
 	"net"
 	//"net/rpc/jsonrpc"
@@ -139,6 +138,6 @@ func Run() {
 		if err != nil {
 			LogError.Error("accept error: " + err.Error())
 		}
-		go jsonrpc.ServeConn(conn)
+		QueueComputeWorker <- conn
 	}
 }
