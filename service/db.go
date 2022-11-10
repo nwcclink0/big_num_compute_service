@@ -10,7 +10,7 @@ import (
 
 type Number struct {
 	gorm.Model
-	Name   string
+	Name   string `gorm:"primaryKey"`
 	Number float64
 }
 
@@ -32,8 +32,7 @@ func InitDb() {
 func CreateObj(name string, number float64) error {
 	var numberObj Number
 	result := db.First(&numberObj, Number{
-		Name:   name,
-		Number: number,
+		Name: name,
 	})
 
 	if result.Error == nil { // update
