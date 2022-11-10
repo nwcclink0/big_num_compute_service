@@ -82,7 +82,7 @@ func LoadConf(confPath string) (ConfYaml, error) {
 	conf.Core.Address = viper.GetString("core.address")
 	conf.Core.Port = viper.GetString("core.port")
 	conf.Core.Mode = viper.GetString("core.mode")
-	fmt.Print(conf.Core)
+	fmt.Println("configuration: ", conf.Core)
 
 	//Log
 	conf.Log.Format = viper.GetString("log.format")
