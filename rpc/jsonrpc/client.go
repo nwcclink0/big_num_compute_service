@@ -8,11 +8,12 @@
 package jsonrpc
 
 import (
+	"big_num_compute_service/rpc"
 	"encoding/json"
 	"fmt"
 	"io"
 	"net"
-	"net/rpc"
+	"reflect"
 	"sync"
 )
 
@@ -44,18 +45,29 @@ func NewClientCodec(conn io.ReadWriteCloser) rpc.ClientCodec {
 }
 
 type clientRequest struct {
-	Method string `json:"method"`
-	Params [1]any `json:"params"`
-	Id     uint64 `json:"id"`
+	Version string `json:"jsonrpc"`
+	Method  string `json:"method"`
+	Params  []any  `json:"params"`
+	Id      uint64 `json:"id"`
 }
 
 func (c *clientCodec) WriteRequest(r *rpc.Request, param any) error {
+
 	c.mutex.Lock()
 	c.pending[r.Seq] = r.ServiceMethod
 	c.mutex.Unlock()
 	c.req.Method = r.ServiceMethod
-	c.req.Params[0] = param
+
+	value := reflect.ValueOf(param)
+	strArr := value.Interface().([]string)
+	c.req.Params = make([]any, len(strArr))
+	for i := 0; i < len(strArr); i++ {
+		arg := reflect.ValueOf(param).Index(i).String() // magic here
+		c.req.Params[i] = arg
+	}
+
 	c.req.Id = r.Seq
+	c.req.Version = "1.0"
 	return c.enc.Encode(&c.req)
 }
 

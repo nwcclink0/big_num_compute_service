@@ -401,7 +401,7 @@ func (c *gobServerCodec) ReadRequestHeader(r *Request) error {
 	return c.dec.Decode(r)
 }
 
-func (c *gobServerCodec) ReadRequestBody(body any) error {
+func (c *gobServerCodec) ReadRequestBody(body *[]string) error {
 	return c.dec.Decode(body)
 }
 
@@ -550,25 +550,33 @@ func (server *Server) readRequest(codec ServerCodec) (service *service, mtype *m
 			return
 		}
 		// discard body
-		codec.ReadRequestBody(nil)
+		var strArr []string
+		codec.ReadRequestBody(&strArr)
 		return
 	}
 
 	// Decode the argument value.
-	argIsValue := false // if true, need to indirect before calling.
+	//argIsValue := false // if true, need to indirect before calling.
 	if mtype.ArgType.Kind() == reflect.Pointer {
 		argv = reflect.New(mtype.ArgType.Elem())
 	} else {
 		argv = reflect.New(mtype.ArgType)
-		argIsValue = true
+		//argIsValue = true
 	}
+
+	var strArr []string
 	// argv guaranteed to be a pointer now.
-	if err = codec.ReadRequestBody(argv.Interface()); err != nil {
+	if err = codec.ReadRequestBody(&strArr); err != nil {
 		return
 	}
-	if argIsValue {
-		argv = argv.Elem()
-	}
+	argv = reflect.ValueOf(strArr)
+
+	//var newArr = argv.Interface().([]string)
+	//fmt.Println(newArr)
+
+	//if argIsValue {
+	//	argv = argv.Elem()
+	//}
 
 	replyv = reflect.New(mtype.ReplyType.Elem())
 
@@ -654,7 +662,7 @@ func RegisterName(name string, rcvr any) error {
 // See NewClient's comment for information about concurrent access.
 type ServerCodec interface {
 	ReadRequestHeader(*Request) error
-	ReadRequestBody(any) error
+	ReadRequestBody(*[]string) error
 	WriteResponse(*Response, any) error
 
 	// Close can be called multiple times and must be idempotent.

@@ -5,10 +5,10 @@
 package jsonrpc
 
 import (
+	"big_num_compute_service/rpc"
 	"encoding/json"
 	"errors"
 	"io"
-	"net/rpc"
 	"sync"
 )
 
@@ -81,20 +81,15 @@ func (c *serverCodec) ReadRequestHeader(r *rpc.Request) error {
 	return nil
 }
 
-func (c *serverCodec) ReadRequestBody(x any) error {
+func (c *serverCodec) ReadRequestBody(x *[]string) error {
 	if x == nil {
 		return nil
 	}
 	if c.req.Params == nil {
 		return errMissingParams
 	}
-	// JSON params is array value.
-	// RPC params is struct.
-	// Unmarshal into array containing struct for now.
-	// Should think about making RPC more general.
-	var params [1]any
-	params[0] = x
-	return json.Unmarshal(*c.req.Params, &params)
+	err := json.Unmarshal(*c.req.Params, x)
+	return err
 }
 
 var null = json.RawMessage([]byte("null"))
