@@ -11,7 +11,7 @@ import (
 var defaultConf = []byte(`
 core:
   worker_num: 4 # default worker number is runtime.NumCPU()
-  queue_num: 2 # default queue number is 2
+  queue_num: 8192 # default queue number is 2
   address: ""
   port: "8080"
   mode: "release"
