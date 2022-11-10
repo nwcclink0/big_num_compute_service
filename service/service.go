@@ -12,7 +12,6 @@ type BigNumCompute struct {
 }
 
 func (BigNumCompute) Create(args []string, result *string) error {
-	*result = ResultFailed
 	if len(args) != 2 {
 		return fmt.Errorf("argument length shoue be 2 with object name and related number")
 	}
@@ -36,7 +35,6 @@ func (BigNumCompute) Create(args []string, result *string) error {
 }
 
 func (BigNumCompute) Delete(args []string, result *string) error {
-	*result = ResultFailed
 	if len(args) != 1 {
 		return fmt.Errorf("argument should be a name that want to delete with")
 	}
@@ -51,7 +49,6 @@ func (BigNumCompute) Delete(args []string, result *string) error {
 }
 
 func (BigNumCompute) Update(args []string, result *string) error {
-	*result = ResultFailed
 	if len(args) != 2 {
 		return fmt.Errorf("argument length error, it should be [name:number]")
 	}
@@ -71,7 +68,6 @@ func (BigNumCompute) Update(args []string, result *string) error {
 }
 
 func (BigNumCompute) Add(args []string, result *string) error {
-	*result = ResultZero
 	if len(args) != 2 {
 		return fmt.Errorf("argument length error, it should be [name:number] or [name1:name2]")
 	}
@@ -84,7 +80,6 @@ func (BigNumCompute) Add(args []string, result *string) error {
 }
 
 func (BigNumCompute) Subtract(args []string, result *string) error {
-	*result = ResultZero
 	if len(args) != 2 {
 		return fmt.Errorf("argument length error, it should be [name:number] or [name1:name2]")
 	}
@@ -97,7 +92,6 @@ func (BigNumCompute) Subtract(args []string, result *string) error {
 }
 
 func (BigNumCompute) Multiply(args []string, result *string) error {
-	*result = ResultZero
 	if len(args) != 2 {
 		return fmt.Errorf("argument length error, it should be [name:number] or [name1:name2]")
 	}
@@ -110,7 +104,6 @@ func (BigNumCompute) Multiply(args []string, result *string) error {
 }
 
 func (BigNumCompute) Divide(args []string, result *string) error {
-	*result = ResultZero
 	if len(args) != 2 {
 		return fmt.Errorf("argument length error, it should be [name:number] or [name1:name2]")
 	}
