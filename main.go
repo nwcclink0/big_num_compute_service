@@ -4,7 +4,9 @@ import (
 	"big_num_compute_service/config"
 	"big_num_compute_service/service"
 	"flag"
+	"fmt"
 	"log"
+	"os"
 )
 
 func main() {
@@ -12,7 +14,8 @@ func main() {
 		configFile string
 	)
 	var err error
-
+	flag.Usage = usage
+	flag.Parse()
 	flag.StringVar(&configFile, "c", "", "Configuration file path")
 	service.BigNumComputeConf, err = config.LoadConf(configFile)
 	if err != nil {
@@ -27,4 +30,15 @@ func main() {
 	service.InitDb()
 	service.InitWorker(service.BigNumComputeConf.Core.WorkerNum, service.BigNumComputeConf.Core.QueueNum)
 	service.Run()
+}
+
+var usageStr = `
+Usage: big_number_compute service [options]
+Server Options:
+	-c, --config <file>
+`
+
+func usage() {
+	fmt.Printf("%s\n", usageStr)
+	os.Exit(0)
 }
