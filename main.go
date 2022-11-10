@@ -25,4 +25,5 @@ func main() {
 	}
 
 	service.InitDb()
+	service.Run()
 }

@@ -6,3 +6,9 @@ const (
 	MultiplyOp = "multiply"
 	DivideOp   = "divide"
 )
+
+const (
+	ResultSuccess = "success"
+	ResultFailed  = "failed"
+	ResultZero    = "0"
+)
