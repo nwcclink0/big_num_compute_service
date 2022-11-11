@@ -63,91 +63,91 @@ func main() {
 	if op == "create" {
 		//var args = []string{"dog" + fmt.Sprint(val), fmt.Sprint(val)}
 		var args = []string{"dog", fmt.Sprint(val)}
-		err = conn.Call("BigNumCompute.Create", args, &data)
+		err = conn.Call("create", args, &data)
 		if err != nil {
 			fmt.Println("can't call rpc, reason:", err)
 		}
 	} else if op == "delete" {
 		var args = []string{"dog"}
-		err = conn.Call("BigNumCompute.Delete", args, &data)
+		err = conn.Call("delete", args, &data)
 		if err != nil {
 			fmt.Println("can't call rpc, reason:", err)
 		}
 	} else if op == "update" {
 		var args = []string{"dog", fmt.Sprint(val)}
-		err = conn.Call("BigNumCompute.Update", args, &data)
+		err = conn.Call("update", args, &data)
 		if err != nil {
 			fmt.Println("can't call rpc, reason:", err)
 		}
 	} else if op == "create_me" {
 		var args = []string{"me", fmt.Sprint(val)}
-		err = conn.Call("BigNumCompute.Create", args, &data)
+		err = conn.Call("create", args, &data)
 		if err != nil {
 			fmt.Println("can't call rpc, reason:", err)
 		}
 	} else if op == "create_cat" {
 		var args = []string{"cat", fmt.Sprint(val)}
-		err = conn.Call("BigNumCompute.Create", args, &data)
+		err = conn.Call("create", args, &data)
 		if err != nil {
 			fmt.Println("can't call rpc, reason:", err)
 		}
 	} else if op == "delete_me" {
 		var args = []string{"me"}
-		err = conn.Call("BigNumCompute.Delete", args, &data)
+		err = conn.Call("delete", args, &data)
 		if err != nil {
 			fmt.Println("can't call rpc, reason:", err)
 		}
 	} else if op == "delete_cat" {
 		var args = []string{"cat"}
-		err = conn.Call("BigNumCompute.Delete", args, &data)
+		err = conn.Call("delete", args, &data)
 		if err != nil {
 			fmt.Println("can't call rpc, reason:", err)
 		}
 	} else if op == "compute_me_cat_add" {
 		var args = []string{"me", "cat"}
-		err = conn.Call("BigNumCompute.Add", args, &data)
+		err = conn.Call("add", args, &data)
 		if err != nil {
 			fmt.Println("can't call rpc, reason:", err)
 		}
 	} else if op == "compute_me_cat_sub" {
 		var args = []string{"me", "cat"}
-		err = conn.Call("BigNumCompute.Subtract", args, &data)
+		err = conn.Call("subtract", args, &data)
 		if err != nil {
 			fmt.Println("can't call rpc, reason:", err)
 		}
 	} else if op == "compute_me_cat_mul" {
 		var args = []string{"me", "cat"}
-		err = conn.Call("BigNumCompute.Multiply", args, &data)
+		err = conn.Call("multiply", args, &data)
 		if err != nil {
 			fmt.Println("can't call rpc, reason:", err)
 		}
 	} else if op == "compute_me_cat_div" {
 		var args = []string{"me", "cat"}
-		err = conn.Call("BigNumCompute.Divide", args, &data)
+		err = conn.Call("divide", args, &data)
 		if err != nil {
 			fmt.Println("can't call rpc, reason:", err)
 		}
 	} else if op == "compute_me_add_random" {
 		var args = []string{"me", fmt.Sprint(val)}
-		err = conn.Call("BigNumCompute.Add", args, &data)
+		err = conn.Call("add", args, &data)
 		if err != nil {
 			fmt.Println("can't call rpc, reason:", err)
 		}
 	} else if op == "compute_me_sub_random" {
 		var args = []string{"me", fmt.Sprint(val)}
-		err = conn.Call("BigNumCompute.Subtract", args, &data)
+		err = conn.Call("subtract", args, &data)
 		if err != nil {
 			fmt.Println("can't call rpc, reason:", err)
 		}
 	} else if op == "compute_me_mul_random" {
 		var args = []string{"me", fmt.Sprint(val)}
-		err = conn.Call("BigNumCompute.Multiply", args, &data)
+		err = conn.Call("multiply", args, &data)
 		if err != nil {
 			fmt.Println("can't call rpc, reason:", err)
 		}
 	} else if op == "compute_me_div_random" {
 		var args = []string{"me", fmt.Sprint(val)}
-		err = conn.Call("BigNumCompute.Divide", args, &data)
+		err = conn.Call("divide", args, &data)
 		if err != nil {
 			fmt.Println("can't call rpc, reason:", err)
 		}
