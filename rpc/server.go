@@ -186,11 +186,12 @@ type Response struct {
 
 // Server represents an RPC Server.
 type Server struct {
-	serviceMap sync.Map   // map[string]*service
-	reqLock    sync.Mutex // protects freeReq
-	freeReq    *Request
-	respLock   sync.Mutex // protects freeResp
-	freeResp   *Response
+	//serviceMap sync.Map // map[string]*service
+	service  *service
+	reqLock  sync.Mutex // protects freeReq
+	freeReq  *Request
+	respLock sync.Mutex // protects freeResp
+	freeResp *Response
 }
 
 // NewServer returns a new Server.
@@ -271,10 +272,10 @@ func (server *Server) register(rcvr any, name string, useName bool) error {
 		log.Print(str)
 		return errors.New(str)
 	}
-
-	if _, dup := server.serviceMap.LoadOrStore(sname, s); dup {
-		return errors.New("rpc: service already defined: " + sname)
-	}
+	server.service = s
+	//if _, dup := server.serviceMap.LoadOrStore(sname, s); dup {
+	//	return errors.New("rpc: service already defined: " + sname)
+	//}
 	return nil
 }
 
@@ -285,7 +286,7 @@ func suitableMethods(typ reflect.Type, logErr bool) map[string]*methodType {
 	for m := 0; m < typ.NumMethod(); m++ {
 		method := typ.Method(m)
 		mtype := method.Type
-		mname := method.Name
+		mname := strings.ToLower(method.Name)
 		// Method must be exported.
 		if !method.IsExported() {
 			continue
@@ -606,22 +607,25 @@ func (server *Server) readRequestHeader(codec ServerCodec) (svc *service, mtype 
 	// we can still recover and move on to the next request.
 	keepReading = true
 
-	dot := strings.LastIndex(req.ServiceMethod, ".")
-	if dot < 0 {
-		err = errors.New("rpc: service/method request ill-formed: " + req.ServiceMethod)
-		return
-	}
-	serviceName := req.ServiceMethod[:dot]
-	methodName := req.ServiceMethod[dot+1:]
+	//dot := strings.LastIndex(req.ServiceMethod, ".")
+	//if dot < 0 {
+	//	err = errors.New("rpc: service/method request ill-formed: " + req.ServiceMethod)
+	//	return
+	//}
+	//serviceName := req.ServiceMethod[:dot]
+	//methodName := req.ServiceMethod[dot+1:]
+	methodName := req.ServiceMethod
 
 	// Look up the request.
-	svci, ok := server.serviceMap.Load(serviceName)
-	if !ok {
-		err = errors.New("rpc: can't find service " + req.ServiceMethod)
-		return
-	}
-	svc = svci.(*service)
-	mtype = svc.method[methodName]
+	//svci, ok := server.serviceMap.Load(serviceName)
+	//svci := server.service
+	//if !ok {
+	//	err = errors.New("rpc: can't find service " + req.ServiceMethod)
+	//	return
+	//}
+	//svc = svci(*service)
+	svc = server.service
+	mtype = server.service.method[methodName]
 	if mtype == nil {
 		err = errors.New("rpc: can't find method " + req.ServiceMethod)
 	}
