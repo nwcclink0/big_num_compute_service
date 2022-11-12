@@ -13,8 +13,8 @@ core:
   worker_num: 4 # default worker number is runtime.NumCPU()
   queue_num: 8192 # default queue number is 2
   address: ""
-  port: "8080"
-  mode: "release"
+  port: "8090"
+  mode: "docker" # docker/localhost
 
 log:
   format: "string" # string or json

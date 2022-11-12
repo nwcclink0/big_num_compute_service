@@ -14,11 +14,16 @@ type Number struct {
 	Number float64
 }
 
-const dsn = "host=localhost user=yt password=yt dbname=big_num port=5432 sslmode=disable"
+const dsnDocker = "host=db user=yt password=yt dbname=big_num port=5432 sslmode=disable"
+const dsnLocalhost = "host=localhost user=yt password=yt dbname=big_num port=5432 sslmode=disable"
 
 func InitDb() {
 	var err error
-	db, err = gorm.Open(postgres.Open(dsn), &gorm.Config{})
+	connectCmd := dsnLocalhost
+	if BigNumComputeConf.Core.Mode == Docker {
+		connectCmd = dsnDocker
+	}
+	db, err = gorm.Open(postgres.Open(connectCmd), &gorm.Config{})
 	if err != nil {
 		LogError.Error(err)
 		panic(err)

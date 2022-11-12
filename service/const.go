@@ -12,3 +12,8 @@ const (
 	ResultFailed  = "failed"
 	ResultZero    = "0"
 )
+
+const (
+	Docker    = "docker"
+	Localhost = "localhost"
+)

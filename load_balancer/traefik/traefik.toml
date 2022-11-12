@@ -1,0 +1,21 @@
+[global]
+  checkNewVersion = false
+  sendAnonymousUsage = false
+[entryPoints]
+  [entryPoints.web]
+    address = ":80"
+  [entryPoints.big_num_compute]
+    address = ":8090"
+  [entryPoints.traefik]
+    address = ":8080"
+  [log]
+    level = "DEBUG"
+  [api]
+    insecure = true
+    dashboard = true
+  [ping]
+  [providers.docker]
+    endpoint = "unix:///var/run/docker.sock"
+    exposedByDefault = true
+  [metrics]
+  [metrics.prometheus]

@@ -1,0 +1,38 @@
+version: '3'
+
+services:
+  big_num_compute_service:
+    image: "yuantingwei/big_num_compute_service:v0.1"
+    restart: always
+    logging:
+      options:
+        max-size: "100k"
+        max-file: "3"
+    labels:
+      - "traefik.tcp.routers.big_num_compute.rule=HostSNI(`*`)"
+      - "traefik.tcp.services.big_num_compute.loadbalancer.server.port=8090"
+      - "traefik.tcp.routers.big_num_compute.entrypoints=big_num_compute"
+    depends_on:
+      - db
+  db:
+    image: "postgres:14"
+    restart: always
+    ports:
+      - 5432:5432
+    volumes:
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
+    environment:
+      - POSTGRES_USER=root
+      - POSTGRES_PASSWORD=password
+  lb:
+    image: traefik:v2.8
+    build: ./traefik
+    entrypoint: traefik --configfile /traefik.toml
+    restart: always
+    command: --api.insecure=true --providers.docker
+    ports:
+      - 8080:8080
+      - 8090:8090
+      - 80:80
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
