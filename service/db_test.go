@@ -8,6 +8,8 @@ import (
 	"testing"
 )
 
+const pesudoHashPassword = "hash"
+
 func initTest() {
 	BigNumComputeConf, _ = config.LoadConf("")
 	if err := InitLog(); err != nil {
@@ -359,5 +361,43 @@ func TestDivideComputeName(t *testing.T) {
 	result, err = Compute("my_weight", "dog_weight", DivideOp)
 	if err == nil {
 		t.Errorf("dog_weight still exist")
+	}
+}
+
+func TestAddAccount(t *testing.T) {
+	initTest()
+	err := AddAccount(email, pesudoHashPassword)
+	if err != nil {
+		t.Errorf(err.Error())
+		return
+	}
+
+	account, err := GetAccount(email)
+	if err != nil {
+		t.Errorf(err.Error())
+		return
+	}
+	if account.Email != email {
+		t.Errorf("account isn't same")
+		return
+	}
+
+	account.Activated = true
+	err = UpdateAccount(account)
+	if err != nil {
+		t.Errorf(err.Error())
+		return
+	}
+
+	account, err = GetAccount(email)
+	if account.Activated == false {
+		t.Errorf("update failed")
+		return
+	}
+
+	err = DeleteAccount(email)
+	if err != nil {
+		t.Errorf(err.Error())
+		return
 	}
 }

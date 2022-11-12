@@ -2,6 +2,7 @@ package service
 
 import (
 	"fmt"
+	"github.com/google/uuid"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 	"math/big"
@@ -12,6 +13,14 @@ type Number struct {
 	gorm.Model
 	Name   string `gorm:"primaryKey"`
 	Number float64
+}
+
+type Account struct {
+	gorm.Model
+	Id           uuid.UUID `gorm:"type:uuid;primary_key;"`
+	Email        string
+	Activated    bool
+	HashPassword string
 }
 
 const dsnDocker = "host=db user=yt password=yt dbname=big_num port=5432 sslmode=disable"
@@ -29,6 +38,10 @@ func InitDb() {
 		panic(err)
 	}
 	err = db.AutoMigrate(&Number{})
+	if err != nil {
+		LogError.Error(err.Error())
+	}
+	err = db.AutoMigrate(&Account{})
 	if err != nil {
 		LogError.Error(err.Error())
 	}
@@ -132,4 +145,58 @@ func Compute(numberArg1 string, numberArg2 string, operation string) (float64, e
 
 	newVal, _ := newBigNumber.Float64()
 	return newVal, nil
+}
+
+func AddAccount(email string, hashPassword string) error {
+	var account Account
+	result := db.First(&account, Account{
+		Email: email,
+	})
+	if result.Error == nil { // name didn't exist
+		return fmt.Errorf("email: " + email + " exist")
+	}
+	db.Create(&Account{
+		Id:           uuid.New(),
+		Email:        email,
+		HashPassword: hashPassword,
+		Activated:    false,
+	})
+	return nil
+}
+
+func DeleteAccount(email string) error {
+	var account Account
+	result := db.First(&account, Account{
+		Email: email,
+	})
+	if result.Error != nil {
+		return fmt.Errorf("account: " + email + " don't exist")
+	}
+	db.Delete(&account)
+	return nil
+}
+
+func GetAccount(email string) (*Account, error) {
+	var account Account
+	result := db.First(&account, Account{
+		Email: email,
+	})
+	if result.Error != nil { // name didn't exist
+		return nil, fmt.Errorf("email: " + email + " exist")
+	}
+	return &account, nil
+}
+
+func UpdateAccount(account *Account) error {
+	var checkAccount Account
+	result := db.First(&checkAccount)
+	if result.Error != nil { // name didn't exist
+		return fmt.Errorf("Can't find account: " + account.Email)
+	}
+	db.Model(account).Updates(&Account{
+		Email:        account.Email,
+		HashPassword: account.HashPassword,
+		Activated:    account.Activated,
+	})
+	return nil
 }
