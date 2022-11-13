@@ -14,6 +14,8 @@ services:
       - "traefik.tcp.routers.big_num_compute.entrypoints=big_num_compute"
     depends_on:
       - db
+    env_file:
+      - .env
   db:
     image: "postgres:14"
     restart: always
