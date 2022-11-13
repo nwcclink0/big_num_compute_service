@@ -1,5 +1,7 @@
 #!/bin/bash
 
+./client -o create_account
+
 for i in {1..10000} ; do
   ./client -o create &
   ./client -o update &
@@ -22,3 +24,5 @@ done
 
 #./client -o delete_me
 #./client -o delete_cat
+
+./client -o delete_account

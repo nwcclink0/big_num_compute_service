@@ -19,6 +19,90 @@ type Arg struct {
 	B int
 }
 
+const email = "yuantingwei@pm.me"
+const password = "yt"
+
+func CreateAccount() {
+	conn, err := jsonrpc.Dial("tcp", "127.0.0.1:"+service.BigNumComputeConf.Core.Port)
+	if err != nil {
+		fmt.Println("can't dial to localhost with " + service.BigNumComputeConf.Core.Port)
+	}
+	defer func(conn *rpc.Client) {
+		err := conn.Close()
+		if err != nil {
+			fmt.Println("can't close connection, error: " + err.Error())
+		}
+	}(conn)
+	var args = []string{email, password}
+	var data string
+	err = conn.Call("createaccount", args, &data)
+	if err != nil {
+		fmt.Println("can't call rpc, reason: ", err)
+	}
+	passcode := data
+	args = []string{email, passcode}
+	err = conn.Call("verifyemail", args, &data)
+	if err != nil {
+		fmt.Println("can't call rpc, reason: ", err)
+	}
+	if data != "success" {
+		fmt.Println("can't verify email")
+		return
+	}
+	fmt.Println(data)
+}
+
+func LoginAccount() (string, error) {
+	conn, err := jsonrpc.Dial("tcp", "127.0.0.1:"+service.BigNumComputeConf.Core.Port)
+	if err != nil {
+		return "", fmt.Errorf("can't dial to localhost with " + service.BigNumComputeConf.Core.Port)
+	}
+	defer func(conn *rpc.Client) {
+		err := conn.Close()
+		if err != nil {
+			return
+		}
+	}(conn)
+	var args = []string{email, password}
+	var data string
+	err = conn.Call("loginaccount", args, &data)
+	if err != nil {
+		return "", fmt.Errorf("can't call rpc, reason:" + err.Error())
+	}
+	token := data
+	return token, nil
+}
+
+func DeleteAccount() {
+	conn, err := jsonrpc.Dial("tcp", "127.0.0.1:"+service.BigNumComputeConf.Core.Port)
+	if err != nil {
+		fmt.Println("can't dial to localhost with " + service.BigNumComputeConf.Core.Port)
+	}
+	defer func(conn *rpc.Client) {
+		err := conn.Close()
+		if err != nil {
+			fmt.Println("can't close connection, error: " + err.Error())
+		}
+	}(conn)
+	var args = []string{email, password}
+	var data string
+	err = conn.Call("loginaccount", args, &data)
+	if err != nil {
+		fmt.Println("can't call rpc, reason: ", err)
+	}
+	token := data
+	args = []string{email, token}
+	err = conn.Call("deleteaccount", args, &data)
+	if err != nil {
+		fmt.Println("can't call rpc, reason: ", err)
+	}
+	if data != "success" {
+		fmt.Println("can't verify email")
+		return
+	}
+	fmt.Println(data)
+}
+
 func main() {
 	var (
 		configFile string
@@ -56,101 +140,120 @@ func main() {
 			fmt.Println("can't close connection, error: " + err.Error())
 		}
 	}(conn)
+
 	var data string
 	min := -100000000000000000.123
 	max := 1000000000000000000.123
 	val := min + rand.Float64()*(max-min)
 	if op == "create" {
-		//var args = []string{"dog" + fmt.Sprint(val), fmt.Sprint(val)}
-		var args = []string{"dog", fmt.Sprint(val)}
+		token, err := LoginAccount()
+		var args = []string{"dog", fmt.Sprint(val), email, token}
 		err = conn.Call("create", args, &data)
 		if err != nil {
 			fmt.Println("can't call rpc, reason:", err)
 		}
 	} else if op == "delete" {
-		var args = []string{"dog"}
+		token, err := LoginAccount()
+		var args = []string{"dog", email, token}
 		err = conn.Call("delete", args, &data)
 		if err != nil {
 			fmt.Println("can't call rpc, reason:", err)
 		}
 	} else if op == "update" {
-		var args = []string{"dog", fmt.Sprint(val)}
+		token, err := LoginAccount()
+		var args = []string{"dog", fmt.Sprint(val), email, token}
 		err = conn.Call("update", args, &data)
 		if err != nil {
 			fmt.Println("can't call rpc, reason:", err)
 		}
 	} else if op == "create_me" {
-		var args = []string{"me", fmt.Sprint(val)}
+		token, err := LoginAccount()
+		var args = []string{"me", fmt.Sprint(val), email, token}
 		err = conn.Call("create", args, &data)
 		if err != nil {
 			fmt.Println("can't call rpc, reason:", err)
 		}
 	} else if op == "create_cat" {
-		var args = []string{"cat", fmt.Sprint(val)}
+		token, err := LoginAccount()
+		var args = []string{"cat", fmt.Sprint(val), email, token}
 		err = conn.Call("create", args, &data)
 		if err != nil {
 			fmt.Println("can't call rpc, reason:", err)
 		}
 	} else if op == "delete_me" {
-		var args = []string{"me"}
+		token, err := LoginAccount()
+		var args = []string{"me", email, token}
 		err = conn.Call("delete", args, &data)
 		if err != nil {
 			fmt.Println("can't call rpc, reason:", err)
 		}
 	} else if op == "delete_cat" {
-		var args = []string{"cat"}
+		token, err := LoginAccount()
+		var args = []string{"cat", email, token}
 		err = conn.Call("delete", args, &data)
 		if err != nil {
 			fmt.Println("can't call rpc, reason:", err)
 		}
 	} else if op == "compute_me_cat_add" {
-		var args = []string{"me", "cat"}
+		token, err := LoginAccount()
+		var args = []string{"me", "cat", email, token}
 		err = conn.Call("add", args, &data)
 		if err != nil {
 			fmt.Println("can't call rpc, reason:", err)
 		}
 	} else if op == "compute_me_cat_sub" {
-		var args = []string{"me", "cat"}
+		token, err := LoginAccount()
+		var args = []string{"me", "cat", email, token}
 		err = conn.Call("subtract", args, &data)
 		if err != nil {
 			fmt.Println("can't call rpc, reason:", err)
 		}
 	} else if op == "compute_me_cat_mul" {
-		var args = []string{"me", "cat"}
+		token, err := LoginAccount()
+		var args = []string{"me", "cat", email, token}
 		err = conn.Call("multiply", args, &data)
 		if err != nil {
 			fmt.Println("can't call rpc, reason:", err)
 		}
 	} else if op == "compute_me_cat_div" {
-		var args = []string{"me", "cat"}
+		token, err := LoginAccount()
+		var args = []string{"me", "cat", email, token}
 		err = conn.Call("divide", args, &data)
 		if err != nil {
 			fmt.Println("can't call rpc, reason:", err)
 		}
 	} else if op == "compute_me_add_random" {
-		var args = []string{"me", fmt.Sprint(val)}
+		token, err := LoginAccount()
+		var args = []string{"me", fmt.Sprint(val), email, token}
 		err = conn.Call("add", args, &data)
 		if err != nil {
 			fmt.Println("can't call rpc, reason:", err)
 		}
 	} else if op == "compute_me_sub_random" {
-		var args = []string{"me", fmt.Sprint(val)}
+		token, err := LoginAccount()
+		var args = []string{"me", fmt.Sprint(val), email, token}
 		err = conn.Call("subtract", args, &data)
 		if err != nil {
 			fmt.Println("can't call rpc, reason:", err)
 		}
 	} else if op == "compute_me_mul_random" {
-		var args = []string{"me", fmt.Sprint(val)}
+		token, err := LoginAccount()
+		var args = []string{"me", fmt.Sprint(val), email, token}
 		err = conn.Call("multiply", args, &data)
 		if err != nil {
 			fmt.Println("can't call rpc, reason:", err)
 		}
 	} else if op == "compute_me_div_random" {
-		var args = []string{"me", fmt.Sprint(val)}
+		token, err := LoginAccount()
+		var args = []string{"me", fmt.Sprint(val), email, token}
 		err = conn.Call("divide", args, &data)
 		if err != nil {
 			fmt.Println("can't call rpc, reason:", err)
 		}
+	} else if op == "create_account" {
+		CreateAccount()
+	} else if op == "delete_account" {
+		DeleteAccount()
 	}
 	fmt.Println("result: " + data)
 }
