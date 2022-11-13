@@ -38,12 +38,14 @@ func CreateAccount() {
 	err = conn.Call("createaccount", args, &data)
 	if err != nil {
 		fmt.Println("can't call rpc, reason: ", err)
+		return
 	}
 	passcode := data
 	args = []string{email, passcode}
 	err = conn.Call("validateemail", args, &data)
 	if err != nil {
 		fmt.Println("can't call rpc, reason: ", err)
+		return
 	}
 	if data != "success" {
 		fmt.Println("can't verify email")
@@ -129,7 +131,7 @@ func main() {
 	rand.Seed(time.Now().UnixNano())
 	n := rand.Intn(100)
 	time.Sleep(time.Duration(n) * time.Nanosecond)
-
+	service.BigNumComputeConf.Core.Mode = service.Localhost
 	conn, err := jsonrpc.Dial("tcp", "127.0.0.1:"+service.BigNumComputeConf.Core.Port)
 	if err != nil {
 		fmt.Println("can't dial to localhost with " + service.BigNumComputeConf.Core.Port)
