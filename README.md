@@ -44,10 +44,13 @@ Big number compute service will send TOTP passcode to account email's mail box t
 ```.env``` file contains
 ```
 JWT_SECRET=your_jwt_secret
-GMAIL_ACCOUNT=your_sender_gmail_account
-GMAIL_AUTH=your_sender_gmail_auth
+MAIL_ACCOUNT=your_sender_gmail_account
+MAIL_AUTH=your_sender_gmail_auth
 DB_USER=your_db_user
 DB_PASSWORD=your_db_password
+MAIL_SMTP_HOST=your_smtp_host
+MAIL_SMTP_PORT=your_smtp_port
+
 ```
 
 ## big_num db schema

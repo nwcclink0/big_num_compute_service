@@ -258,11 +258,11 @@ func (BigNumCompute) Divide(args []string, result *string) error {
 }
 
 func sendOptMail(email string, passcode string) error {
-	from := os.Getenv("GMAIL_ACCOUNT")
+	from := os.Getenv("MAIL_ACCOUNT")
 	if len(from) == 0 {
 		return fmt.Errorf("mail sender failed")
 	}
-	password := os.Getenv("GMAIL_AUTH")
+	password := os.Getenv("MAIL_AUTH")
 	if len(password) == 0 {
 		return fmt.Errorf("mail sender failed")
 	}
@@ -270,8 +270,8 @@ func sendOptMail(email string, passcode string) error {
 	toEmailAddress := email
 	to := []string{toEmailAddress}
 
-	host := "smtp.gmail.com"
-	port := "587"
+	host := os.Getenv("MAIL_SMTP_HOST")
+	port := os.Getenv("MAIL_SMTP_PORT")
 	address := host + ":" + port
 
 	subject := "Account verify code\r\n"
