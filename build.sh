@@ -15,6 +15,8 @@ if [ "$TARGET" = "lb" ]; then
   docker-compose up --scale big_num_compute_service=2
 elif [ "$TARGET" = "native" ]; then
   go build -v
+elif [ "$TARGET" = "github_action" ]; then
+  go build -v -o="./load_balancer/service/big_num_compute_service"
 else
   echo "./build [load_balancer/native]"
 fi
