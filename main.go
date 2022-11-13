@@ -5,6 +5,7 @@ import (
 	"big_num_compute_service/service"
 	"flag"
 	"fmt"
+	_ "github.com/joho/godotenv/autoload"
 	"log"
 	"os"
 )
@@ -15,8 +16,8 @@ func main() {
 	)
 	var err error
 	flag.Usage = usage
-	flag.Parse()
 	flag.StringVar(&configFile, "c", "", "Configuration file path")
+	flag.Parse()
 	service.BigNumComputeConf, err = config.LoadConf(configFile)
 	if err != nil {
 		log.Fatalf("Load yaml config file error: '%v'", err)
@@ -29,6 +30,8 @@ func main() {
 
 	service.InitDb()
 	service.InitWorker(service.BigNumComputeConf.Core.WorkerNum, service.BigNumComputeConf.Core.QueueNum)
+	service.InitArgon2Params()
+
 	service.Run()
 }
 

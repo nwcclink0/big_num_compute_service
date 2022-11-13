@@ -353,3 +353,72 @@ func TestBigNumCompute_Divide(t *testing.T) {
 		t.Errorf("cant delete %s, error: %s", args[0], err)
 	}
 }
+
+func TestSendOptMail(t *testing.T) {
+	err := initAuthTest()
+	if err != nil {
+		t.Errorf(err.Error())
+		return
+	}
+	receiveEmail := email
+	passcode := "123456"
+	err = sendOptMail(receiveEmail, passcode)
+	if err != nil {
+		t.Errorf(err.Error())
+		return
+	}
+}
+
+func TestBigNumCompute_CreateAccount(t *testing.T) {
+	initTest()
+	err := initAuthTest()
+	if err != nil {
+		t.Errorf(err.Error())
+		return
+	}
+	args := []string{email, password}
+	var result string
+	bigNumberCompute := BigNumCompute{}
+	err = bigNumberCompute.CreateAccount(args, &result)
+	if err != nil {
+		t.Errorf(err.Error())
+		return
+	}
+	if len(result) == 0 {
+		t.Errorf("email verify passcode is empty")
+		return
+	}
+	passcode := result
+	args = []string{email, passcode}
+	err = bigNumberCompute.VerifyEmail(args, &result)
+	if err != nil {
+		t.Errorf(err.Error())
+		return
+	}
+	if result != ResultSuccess {
+		t.Errorf(ValidatePasscodeFailed.Error())
+		return
+	}
+
+	args = []string{email, password}
+	err = bigNumberCompute.LoginAccount(args, &result)
+	if err != nil {
+		t.Errorf(err.Error())
+		return
+	}
+	if len(result) == 0 {
+		t.Errorf(ValidateCredentialsByEmailFailed.Error())
+	}
+
+	token := result
+	args = []string{email, token}
+	err = bigNumberCompute.DeleteAccount(args, &result)
+	if err != nil {
+		t.Errorf(err.Error())
+		return
+	}
+	if result != ResultSuccess {
+		t.Errorf(DeleteAccountFailed.Error())
+		return
+	}
+}

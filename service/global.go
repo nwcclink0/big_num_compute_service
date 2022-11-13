@@ -13,4 +13,5 @@ var (
 	LogAccess          *logrus.Logger
 	LogError           *logrus.Logger
 	db                 *gorm.DB
+	Argon2Conf         *Argon2Params
 )
