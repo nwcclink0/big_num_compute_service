@@ -16,31 +16,31 @@ type BigNumCompute struct {
 
 func (BigNumCompute) Create(args []string, result *string) error {
 	if len(args) != 4 {
-		return fmt.Errorf("argument length shoue be 2 with object name and related number")
+		return ArgumentNumberCreateFailed
 	}
 
 	name := args[0]
 	if len(name) == 0 {
-		return fmt.Errorf("name is empty")
+		return NameEmptyFailed
 	}
 	LogAccess.Debug("create number object name: " + name)
 	numberStr := args[1]
 	if len(numberStr) == 0 {
-		return fmt.Errorf("naumber is empty")
+		return NumberEmptyFailed
 	}
 	number, err := strconv.ParseFloat(numberStr, 64)
 	if err != nil {
-		return fmt.Errorf("parsing number failed: %s", err.Error())
+		return NumberParsingFailed
 	}
 
 	email := args[2]
 	if len(email) == 0 {
-		return fmt.Errorf("email is empty")
+		return EmailEmptyFailed
 	}
 
 	token := args[3]
 	if len(token) == 0 {
-		return fmt.Errorf("token is empty")
+		return TokenEmptyFailed
 	}
 
 	validate, err := VerifiedAccountToken(email, token)
@@ -64,19 +64,19 @@ func (BigNumCompute) Create(args []string, result *string) error {
 
 func (BigNumCompute) Delete(args []string, result *string) error {
 	if len(args) != 3 {
-		return fmt.Errorf("argument should be a name that want to delete with")
+		return ArgumentNumberDeleteFailed
 	}
 	name := args[0]
 	LogAccess.Debug("delete object name")
 
 	email := args[1]
 	if len(email) == 0 {
-		return fmt.Errorf("email is empty")
+		return EmailEmptyFailed
 	}
 
 	token := args[2]
 	if len(token) == 0 {
-		return fmt.Errorf("token is empty")
+		return TokenEmptyFailed
 	}
 
 	validate, err := VerifiedAccountToken(email, token)
@@ -97,24 +97,24 @@ func (BigNumCompute) Delete(args []string, result *string) error {
 
 func (BigNumCompute) Update(args []string, result *string) error {
 	if len(args) != 4 {
-		return fmt.Errorf("argument length error, it should be [name:number]")
+		return ArgumentNumberUpdateFailed
 	}
 	name := args[0]
 	LogAccess.Debug("create number object name: " + name)
 	numberStr := args[1]
 	number, err := strconv.ParseFloat(numberStr, 64)
 	if err != nil {
-		return fmt.Errorf("parsing number failed: %s", err)
+		return NumberParsingFailed
 	}
 
 	email := args[2]
 	if len(email) == 0 {
-		return fmt.Errorf("email is empty")
+		return EmailEmptyFailed
 	}
 
 	token := args[3]
 	if len(token) == 0 {
-		return fmt.Errorf("token is empty")
+		return TokenEmptyFailed
 	}
 
 	validate, err := VerifiedAccountToken(email, token)
@@ -135,17 +135,17 @@ func (BigNumCompute) Update(args []string, result *string) error {
 
 func (BigNumCompute) Add(args []string, result *string) error {
 	if len(args) != 4 {
-		return fmt.Errorf("argument length error, it should be [name:number] or [name1:name2]")
+		return ArgumentNumberAddFailed
 	}
 
 	email := args[2]
 	if len(email) == 0 {
-		return fmt.Errorf("email is empty")
+		return EmailEmptyFailed
 	}
 
 	token := args[3]
 	if len(token) == 0 {
-		return fmt.Errorf("token is empty")
+		return TokenEmptyFailed
 	}
 
 	validate, err := VerifiedAccountToken(email, token)
@@ -166,17 +166,17 @@ func (BigNumCompute) Add(args []string, result *string) error {
 
 func (BigNumCompute) Subtract(args []string, result *string) error {
 	if len(args) != 4 {
-		return fmt.Errorf("argument length error, it should be [name:number] or [name1:name2]")
+		return ArgumentNumberSubtractFailed
 	}
 
 	email := args[2]
 	if len(email) == 0 {
-		return fmt.Errorf("email is empty")
+		return EmailEmptyFailed
 	}
 
 	token := args[3]
 	if len(token) == 0 {
-		return fmt.Errorf("token is empty")
+		return TokenEmptyFailed
 	}
 
 	validate, err := VerifiedAccountToken(email, token)
@@ -197,17 +197,17 @@ func (BigNumCompute) Subtract(args []string, result *string) error {
 
 func (BigNumCompute) Multiply(args []string, result *string) error {
 	if len(args) != 4 {
-		return fmt.Errorf("argument length error, it should be [name:number] or [name1:name2]")
+		return ArgumentNumberMultiplyFailed
 	}
 
 	email := args[2]
 	if len(email) == 0 {
-		return fmt.Errorf("email is empty")
+		return EmailEmptyFailed
 	}
 
 	token := args[3]
 	if len(token) == 0 {
-		return fmt.Errorf("token is empty")
+		return TokenEmptyFailed
 	}
 
 	validate, err := VerifiedAccountToken(email, token)
@@ -228,17 +228,17 @@ func (BigNumCompute) Multiply(args []string, result *string) error {
 
 func (BigNumCompute) Divide(args []string, result *string) error {
 	if len(args) != 4 {
-		return fmt.Errorf("argument length error, it should be [name:number] or [name1:name2]")
+		return ArgumentNumberDivideFailed
 	}
 
 	email := args[2]
 	if len(email) == 0 {
-		return fmt.Errorf("email is empty")
+		return EmailEmptyFailed
 	}
 
 	token := args[3]
 	if len(token) == 0 {
-		return fmt.Errorf("token is empty")
+		return TokenEmptyFailed
 	}
 
 	validate, err := VerifiedAccountToken(email, token)
@@ -327,20 +327,20 @@ func (BigNumCompute) CreateAccount(args []string, result *string) error {
 
 func (BigNumCompute) ValidateEmail(args []string, result *string) error {
 	if len(args) != 2 {
-		return fmt.Errorf("arguments should be [email:passcode]")
+		return ArgumentValidateEmailFailed
 	}
 	email := args[0]
 	passcode := args[1]
 	success, err := VerifyAccountEmail(email, passcode)
 	if err != nil {
-		return err
+		return EmailVerifyFailed
 	}
 	if success == false {
-		return err
+		return EmailVerifyFailed
 	}
 	err = AccountEmailActivated(email)
 	if err != nil {
-		return err
+		return EmailActivateFailed
 	}
 	*result = ResultSuccess
 	return nil
@@ -348,21 +348,21 @@ func (BigNumCompute) ValidateEmail(args []string, result *string) error {
 
 func (BigNumCompute) LoginAccount(args []string, result *string) error {
 	if len(args) != 2 {
-		return ArgumentEmailPassword
+		return ArgumentEmailPasswordFailed
 	}
 	email := args[0]
 	password := args[1]
 
 	success, err := IsAccountEmailVerified(email)
 	if err != nil {
-		return err
+		return EmailNotVerified
 	}
 	if success == false {
 		return EmailNotVerified
 	}
 	token, err := GenerateAccountToken(email, password)
 	if err != nil {
-		return err
+		return GenerateAccountTokenFailed
 	}
 	*result = token
 	return nil
@@ -370,14 +370,14 @@ func (BigNumCompute) LoginAccount(args []string, result *string) error {
 
 func (BigNumCompute) DeleteAccount(args []string, result *string) error {
 	if len(args) != 2 {
-		return ArgumentEmailToken
+		return ArgumentEmailTokenFailed
 	}
 	email := args[0]
 	token := args[1]
 
 	success, err := VerifiedAccountToken(email, token)
 	if err != nil {
-		return err
+		return ValidateTokenFailed
 	}
 	if success == false {
 		return ValidateTokenFailed
