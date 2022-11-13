@@ -8,10 +8,44 @@ import (
 
 func TestBigNumCompute_Create_And_Delete(t *testing.T) {
 	initTest()
-	var arg = []string{"dog", "10"}
-	var result string
+	err := initAuthTest()
+	if err != nil {
+		t.Errorf(err.Error())
+		return
+	}
+
 	bigNumberCompute := BigNumCompute{}
-	err := bigNumberCompute.Create(arg, &result)
+
+	var args = []string{email, password}
+	var result string
+	err = bigNumberCompute.CreateAccount(args, &result)
+	if err != nil {
+		t.Errorf(err.Error())
+		return
+	}
+
+	passcode := result
+	args = []string{email, passcode}
+	err = bigNumberCompute.VerifyEmail(args, &result)
+	if err != nil {
+		t.Errorf(err.Error())
+		return
+	}
+
+	args = []string{email, password}
+	err = bigNumberCompute.LoginAccount(args, &result)
+	if err != nil {
+		t.Errorf(err.Error())
+		return
+	}
+	token := result
+	if len(token) == 0 {
+		t.Errorf("token lenght is zero")
+		return
+	}
+
+	args = []string{"dog", "10", email, token}
+	err = bigNumberCompute.Create(args, &result)
 	if err != nil {
 		t.Errorf("can't create object, error: %s", err)
 	}
@@ -19,13 +53,24 @@ func TestBigNumCompute_Create_And_Delete(t *testing.T) {
 		t.Errorf("incorrect reuslt:%s", result)
 	}
 
-	arg = []string{"dog"}
-	err = bigNumberCompute.Delete(arg, &result)
+	args = []string{"dog", email, token}
+	err = bigNumberCompute.Delete(args, &result)
 	if err != nil {
 		t.Errorf("can't deleteobject, error: %s", err)
 	}
 	if result != ResultSuccess {
 		t.Errorf("incorrect result: %s", result)
+	}
+
+	args = []string{email, token}
+	err = bigNumberCompute.DeleteAccount(args, &result)
+	if err != nil {
+		t.Errorf(err.Error())
+		return
+	}
+	if result != ResultSuccess {
+		t.Errorf("delete account failed")
+		return
 	}
 }
 
@@ -48,10 +93,42 @@ func TestBigNumCompute_Create_And_Delete(t *testing.T) {
 
 func TestBigNumCompute_Update(t *testing.T) {
 	initTest()
-	var args = []string{"dog", "10"}
-	var result string
+	err := initAuthTest()
+	if err != nil {
+		t.Errorf(err.Error())
+		return
+	}
 	bigNumberCompute := BigNumCompute{}
-	err := bigNumberCompute.Create(args, &result)
+
+	var args = []string{email, password}
+	var result string
+	err = bigNumberCompute.CreateAccount(args, &result)
+	if err != nil {
+		t.Errorf(err.Error())
+		return
+	}
+
+	passcode := result
+	args = []string{email, passcode}
+	err = bigNumberCompute.VerifyEmail(args, &result)
+	if err != nil {
+		t.Errorf(err.Error())
+		return
+	}
+
+	args = []string{email, password}
+	err = bigNumberCompute.LoginAccount(args, &result)
+	if err != nil {
+		t.Errorf(err.Error())
+		return
+	}
+	token := result
+	if len(token) == 0 {
+		t.Errorf("token lenght is zero")
+		return
+	}
+	args = []string{"dog", "10", email, token}
+	err = bigNumberCompute.Create(args, &result)
 	if err != nil {
 		t.Errorf("can't create object, error: %s", err)
 	}
@@ -59,7 +136,7 @@ func TestBigNumCompute_Update(t *testing.T) {
 		t.Errorf("incorrect reuslt:%s", result)
 	}
 
-	args = []string{"dog", "20"}
+	args = []string{"dog", "20", email, token}
 	err = bigNumberCompute.Update(args, &result)
 	if err != nil {
 		t.Errorf("can't update object, error: %s", err)
@@ -68,7 +145,7 @@ func TestBigNumCompute_Update(t *testing.T) {
 		t.Errorf("incorrect reuslt:%s", result)
 	}
 
-	args = []string{"dog"}
+	args = []string{"dog", email, token}
 	err = bigNumberCompute.Delete(args, &result)
 	if err != nil {
 		t.Errorf("can't deleteobject, error: %s", err)
@@ -76,16 +153,62 @@ func TestBigNumCompute_Update(t *testing.T) {
 	if result != ResultSuccess {
 		t.Errorf("incorrect result: %s", result)
 	}
+
+	args = []string{email, token}
+	err = bigNumberCompute.DeleteAccount(args, &result)
+	if err != nil {
+		t.Errorf(err.Error())
+		return
+	}
+	if result != ResultSuccess {
+		t.Errorf("delete account failed")
+		return
+	}
 }
 
 func TestBigNumCompute_Add(t *testing.T) {
 	initTest()
+	err := initAuthTest()
+
+	bigNumberCompute := BigNumCompute{}
+
+	if err != nil {
+		t.Errorf(err.Error())
+		return
+	}
+
+	var args = []string{email, password}
+	var result string
+	err = bigNumberCompute.CreateAccount(args, &result)
+	if err != nil {
+		t.Errorf(err.Error())
+		return
+	}
+
+	passcode := result
+	args = []string{email, passcode}
+	err = bigNumberCompute.VerifyEmail(args, &result)
+	if err != nil {
+		t.Errorf(err.Error())
+		return
+	}
+
+	args = []string{email, password}
+	err = bigNumberCompute.LoginAccount(args, &result)
+	if err != nil {
+		t.Errorf(err.Error())
+		return
+	}
+	token := result
+	if len(token) == 0 {
+		t.Errorf("token lenght is zero")
+		return
+	}
 
 	dogWeight := big.NewFloat(float64(10))
-	var args = []string{"dog", fmt.Sprint(dogWeight)}
-	var result string
-	bigNumberCompute := BigNumCompute{}
-	err := bigNumberCompute.Create(args, &result)
+	args = []string{"dog", fmt.Sprint(dogWeight), email, token}
+
+	err = bigNumberCompute.Create(args, &result)
 	if err != nil {
 		t.Errorf("can't create object, error: %s", err)
 		return
@@ -96,7 +219,7 @@ func TestBigNumCompute_Add(t *testing.T) {
 	}
 
 	catWeight := big.NewFloat(float64(20))
-	args = []string{"cat", fmt.Sprint(catWeight)}
+	args = []string{"cat", fmt.Sprint(catWeight), email, token}
 	err = bigNumberCompute.Create(args, &result)
 	if err != nil {
 		t.Errorf("can't create object, error: %s", err)
@@ -108,7 +231,7 @@ func TestBigNumCompute_Add(t *testing.T) {
 	}
 
 	dogWeight1 := big.NewFloat(10.11340123)
-	args = []string{"dog", fmt.Sprint(dogWeight1)}
+	args = []string{"dog", fmt.Sprint(dogWeight1), email, token}
 	err = bigNumberCompute.Add(args, &result)
 	if err != nil {
 		t.Errorf("can't create object, error: %s", err)
@@ -122,7 +245,7 @@ func TestBigNumCompute_Add(t *testing.T) {
 	}
 	dogWeight.Sub(dogWeight, dogWeight1)
 
-	args = []string{"dog", "cat"}
+	args = []string{"dog", "cat", email, token}
 	err = bigNumberCompute.Add(args, &result)
 	if err != nil {
 		t.Errorf("can't create object, error: %s", err)
@@ -134,27 +257,70 @@ func TestBigNumCompute_Add(t *testing.T) {
 		return
 	}
 
-	args = []string{"dog"}
+	args = []string{"dog", email, token}
 	err = bigNumberCompute.Delete(args, &result)
 	if result != ResultSuccess {
 		t.Errorf("cant delete %s, error: %s", args[0], err)
 	}
 
-	args = []string{"cat"}
+	args = []string{"cat", email, token}
 	err = bigNumberCompute.Delete(args, &result)
 	if result != ResultSuccess {
 		t.Errorf("cant delete %s, error: %s", args[0], err)
+	}
+
+	args = []string{email, token}
+	err = bigNumberCompute.DeleteAccount(args, &result)
+	if err != nil {
+		t.Errorf(err.Error())
+		return
+	}
+	if result != ResultSuccess {
+		t.Errorf("delete account failed")
+		return
 	}
 }
 
 func TestBigNumCompute_Subtract(t *testing.T) {
 	initTest()
+	err := initAuthTest()
+	if err != nil {
+		t.Errorf(err.Error())
+		return
+	}
+	bigNumberCompute := BigNumCompute{}
+
+	var args = []string{email, password}
+	var result string
+	err = bigNumberCompute.CreateAccount(args, &result)
+	if err != nil {
+		t.Errorf(err.Error())
+		return
+	}
+
+	passcode := result
+	args = []string{email, passcode}
+	err = bigNumberCompute.VerifyEmail(args, &result)
+	if err != nil {
+		t.Errorf(err.Error())
+		return
+	}
+
+	args = []string{email, password}
+	err = bigNumberCompute.LoginAccount(args, &result)
+	if err != nil {
+		t.Errorf(err.Error())
+		return
+	}
+	token := result
+	if len(token) == 0 {
+		t.Errorf("token lenght is zero")
+		return
+	}
 
 	dogWeight := big.NewFloat(float64(10))
-	var args = []string{"dog", fmt.Sprint(dogWeight)}
-	var result string
-	bigNumberCompute := BigNumCompute{}
-	err := bigNumberCompute.Create(args, &result)
+	args = []string{"dog", fmt.Sprint(dogWeight), email, token}
+	err = bigNumberCompute.Create(args, &result)
 	if err != nil {
 		t.Errorf("can't create object, error: %s", err)
 		return
@@ -165,7 +331,7 @@ func TestBigNumCompute_Subtract(t *testing.T) {
 	}
 
 	catWeight := big.NewFloat(float64(20))
-	args = []string{"cat", fmt.Sprint(catWeight)}
+	args = []string{"cat", fmt.Sprint(catWeight), email, token}
 	err = bigNumberCompute.Create(args, &result)
 	if err != nil {
 		t.Errorf("can't create object, error: %s", err)
@@ -177,7 +343,7 @@ func TestBigNumCompute_Subtract(t *testing.T) {
 	}
 
 	dogWeight1 := big.NewFloat(10.11340123)
-	args = []string{"dog", fmt.Sprint(dogWeight1)}
+	args = []string{"dog", fmt.Sprint(dogWeight1), email, token}
 	err = bigNumberCompute.Subtract(args, &result)
 	if err != nil {
 		t.Errorf("can't create object, error: %s", err)
@@ -191,7 +357,7 @@ func TestBigNumCompute_Subtract(t *testing.T) {
 	}
 	dogWeight.Add(dogWeight, dogWeight1)
 
-	args = []string{"dog", "cat"}
+	args = []string{"dog", "cat", email, token}
 	err = bigNumberCompute.Subtract(args, &result)
 	if err != nil {
 		t.Errorf("can't create object, error: %s", err)
@@ -203,27 +369,70 @@ func TestBigNumCompute_Subtract(t *testing.T) {
 		return
 	}
 
-	args = []string{"dog"}
+	args = []string{"dog", email, token}
 	err = bigNumberCompute.Delete(args, &result)
 	if result != ResultSuccess {
 		t.Errorf("cant delete %s, error: %s", args[0], err)
 	}
 
-	args = []string{"cat"}
+	args = []string{"cat", email, token}
 	err = bigNumberCompute.Delete(args, &result)
 	if result != ResultSuccess {
 		t.Errorf("cant delete %s, error: %s", args[0], err)
+	}
+
+	args = []string{email, token}
+	err = bigNumberCompute.DeleteAccount(args, &result)
+	if err != nil {
+		t.Errorf(err.Error())
+		return
+	}
+	if result != ResultSuccess {
+		t.Errorf("delete account failed")
+		return
 	}
 }
 
 func TestBigNumCompute_Multiply(t *testing.T) {
 	initTest()
+	err := initAuthTest()
+	if err != nil {
+		t.Errorf(err.Error())
+		return
+	}
+	bigNumberCompute := BigNumCompute{}
+
+	var args = []string{email, password}
+	var result string
+	err = bigNumberCompute.CreateAccount(args, &result)
+	if err != nil {
+		t.Errorf(err.Error())
+		return
+	}
+
+	passcode := result
+	args = []string{email, passcode}
+	err = bigNumberCompute.VerifyEmail(args, &result)
+	if err != nil {
+		t.Errorf(err.Error())
+		return
+	}
+
+	args = []string{email, password}
+	err = bigNumberCompute.LoginAccount(args, &result)
+	if err != nil {
+		t.Errorf(err.Error())
+		return
+	}
+	token := result
+	if len(token) == 0 {
+		t.Errorf("token lenght is zero")
+		return
+	}
 
 	dogWeight := big.NewFloat(float64(10))
-	var args = []string{"dog", fmt.Sprint(dogWeight)}
-	var result string
-	bigNumberCompute := BigNumCompute{}
-	err := bigNumberCompute.Create(args, &result)
+	args = []string{"dog", fmt.Sprint(dogWeight), email, token}
+	err = bigNumberCompute.Create(args, &result)
 	if err != nil {
 		t.Errorf("can't create object, error: %s", err)
 		return
@@ -234,7 +443,7 @@ func TestBigNumCompute_Multiply(t *testing.T) {
 	}
 
 	catWeight := big.NewFloat(float64(20))
-	args = []string{"cat", fmt.Sprint(catWeight)}
+	args = []string{"cat", fmt.Sprint(catWeight), email, token}
 	err = bigNumberCompute.Create(args, &result)
 	if err != nil {
 		t.Errorf("can't create object, error: %s", err)
@@ -246,7 +455,7 @@ func TestBigNumCompute_Multiply(t *testing.T) {
 	}
 
 	dogWeight1 := big.NewFloat(10.11340123)
-	args = []string{"dog", fmt.Sprint(dogWeight1)}
+	args = []string{"dog", fmt.Sprint(dogWeight1), email, token}
 	err = bigNumberCompute.Multiply(args, &result)
 	if err != nil {
 		t.Errorf("can't create object, error: %s", err)
@@ -260,7 +469,7 @@ func TestBigNumCompute_Multiply(t *testing.T) {
 	}
 	dogWeight.Quo(dogWeight, dogWeight1)
 
-	args = []string{"dog", "cat"}
+	args = []string{"dog", "cat", email, token}
 	err = bigNumberCompute.Multiply(args, &result)
 	if err != nil {
 		t.Errorf("can't create object, error: %s", err)
@@ -272,27 +481,70 @@ func TestBigNumCompute_Multiply(t *testing.T) {
 		return
 	}
 
-	args = []string{"dog"}
+	args = []string{"dog", email, token}
 	err = bigNumberCompute.Delete(args, &result)
 	if result != ResultSuccess {
 		t.Errorf("cant delete %s, error: %s", args[0], err)
 	}
 
-	args = []string{"cat"}
+	args = []string{"cat", email, token}
 	err = bigNumberCompute.Delete(args, &result)
 	if result != ResultSuccess {
 		t.Errorf("cant delete %s, error: %s", args[0], err)
+	}
+
+	args = []string{email, token}
+	err = bigNumberCompute.DeleteAccount(args, &result)
+	if err != nil {
+		t.Errorf(err.Error())
+		return
+	}
+	if result != ResultSuccess {
+		t.Errorf("delete account failed")
+		return
 	}
 }
 
 func TestBigNumCompute_Divide(t *testing.T) {
 	initTest()
+	err := initAuthTest()
+	if err != nil {
+		t.Errorf(err.Error())
+		return
+	}
+	bigNumberCompute := BigNumCompute{}
+
+	var args = []string{email, password}
+	var result string
+	err = bigNumberCompute.CreateAccount(args, &result)
+	if err != nil {
+		t.Errorf(err.Error())
+		return
+	}
+
+	passcode := result
+	args = []string{email, passcode}
+	err = bigNumberCompute.VerifyEmail(args, &result)
+	if err != nil {
+		t.Errorf(err.Error())
+		return
+	}
+
+	args = []string{email, password}
+	err = bigNumberCompute.LoginAccount(args, &result)
+	if err != nil {
+		t.Errorf(err.Error())
+		return
+	}
+	token := result
+	if len(token) == 0 {
+		t.Errorf("token lenght is zero")
+		return
+	}
 
 	dogWeight := big.NewFloat(float64(10))
-	var args = []string{"dog", fmt.Sprint(dogWeight)}
-	var result string
-	bigNumberCompute := BigNumCompute{}
-	err := bigNumberCompute.Create(args, &result)
+	args = []string{"dog", fmt.Sprint(dogWeight), email, token}
+	err = bigNumberCompute.Create(args, &result)
 	if err != nil {
 		t.Errorf("can't create object, error: %s", err)
 		return
@@ -303,7 +555,7 @@ func TestBigNumCompute_Divide(t *testing.T) {
 	}
 
 	catWeight := big.NewFloat(float64(20))
-	args = []string{"cat", fmt.Sprint(catWeight)}
+	args = []string{"cat", fmt.Sprint(catWeight), email, token}
 	err = bigNumberCompute.Create(args, &result)
 	if err != nil {
 		t.Errorf("can't create object, error: %s", err)
@@ -315,7 +567,7 @@ func TestBigNumCompute_Divide(t *testing.T) {
 	}
 
 	dogWeight1 := big.NewFloat(10.11340123)
-	args = []string{"dog", fmt.Sprint(dogWeight1)}
+	args = []string{"dog", fmt.Sprint(dogWeight1), email, token}
 	err = bigNumberCompute.Divide(args, &result)
 	if err != nil {
 		t.Errorf("can't create object, error: %s", err)
@@ -329,7 +581,7 @@ func TestBigNumCompute_Divide(t *testing.T) {
 	}
 	dogWeight.Mul(dogWeight, dogWeight1)
 
-	args = []string{"dog", "cat"}
+	args = []string{"dog", "cat", email, token}
 	err = bigNumberCompute.Divide(args, &result)
 	if err != nil {
 		t.Errorf("can't create object, error: %s", err)
@@ -341,16 +593,27 @@ func TestBigNumCompute_Divide(t *testing.T) {
 		return
 	}
 
-	args = []string{"dog"}
+	args = []string{"dog", email, token}
 	err = bigNumberCompute.Delete(args, &result)
 	if result != ResultSuccess {
 		t.Errorf("cant delete %s, error: %s", args[0], err)
 	}
 
-	args = []string{"cat"}
+	args = []string{"cat", email, token}
 	err = bigNumberCompute.Delete(args, &result)
 	if result != ResultSuccess {
 		t.Errorf("cant delete %s, error: %s", args[0], err)
+	}
+
+	args = []string{email, token}
+	err = bigNumberCompute.DeleteAccount(args, &result)
+	if err != nil {
+		t.Errorf(err.Error())
+		return
+	}
+	if result != ResultSuccess {
+		t.Errorf("delete account failed")
+		return
 	}
 }
 

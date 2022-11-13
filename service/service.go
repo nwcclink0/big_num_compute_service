@@ -15,17 +15,42 @@ type BigNumCompute struct {
 }
 
 func (BigNumCompute) Create(args []string, result *string) error {
-	if len(args) != 2 {
+	if len(args) != 4 {
 		return fmt.Errorf("argument length shoue be 2 with object name and related number")
 	}
 
 	name := args[0]
+	if len(name) == 0 {
+		return fmt.Errorf("name is empty")
+	}
 	LogAccess.Debug("create number object name: " + name)
 	numberStr := args[1]
+	if len(numberStr) == 0 {
+		return fmt.Errorf("naumber is empty")
+	}
 	number, err := strconv.ParseFloat(numberStr, 64)
 	if err != nil {
 		return fmt.Errorf("parsing number failed: %s", err.Error())
 	}
+
+	email := args[2]
+	if len(email) == 0 {
+		return fmt.Errorf("email is empty")
+	}
+
+	token := args[3]
+	if len(token) == 0 {
+		return fmt.Errorf("token is empty")
+	}
+
+	validate, err := VerifiedAccountToken(email, token)
+	if err != nil {
+		return ValidateTokenFailed
+	}
+	if validate == false {
+		return ValidateTokenFailed
+	}
+
 	LogAccess.Debug("create number object number: ", number)
 
 	err = CreateObj(name, number)
@@ -38,12 +63,31 @@ func (BigNumCompute) Create(args []string, result *string) error {
 }
 
 func (BigNumCompute) Delete(args []string, result *string) error {
-	if len(args) != 1 {
+	if len(args) != 3 {
 		return fmt.Errorf("argument should be a name that want to delete with")
 	}
 	name := args[0]
 	LogAccess.Debug("delete object name")
-	err := DeleteObj(name)
+
+	email := args[1]
+	if len(email) == 0 {
+		return fmt.Errorf("email is empty")
+	}
+
+	token := args[2]
+	if len(token) == 0 {
+		return fmt.Errorf("token is empty")
+	}
+
+	validate, err := VerifiedAccountToken(email, token)
+	if err != nil {
+		return ValidateTokenFailed
+	}
+	if validate == false {
+		return ValidateTokenFailed
+	}
+
+	err = DeleteObj(name)
 	if err != nil {
 		return fmt.Errorf("delete number object failed: %s", err)
 	}
@@ -52,7 +96,7 @@ func (BigNumCompute) Delete(args []string, result *string) error {
 }
 
 func (BigNumCompute) Update(args []string, result *string) error {
-	if len(args) != 2 {
+	if len(args) != 4 {
 		return fmt.Errorf("argument length error, it should be [name:number]")
 	}
 	name := args[0]
@@ -62,6 +106,25 @@ func (BigNumCompute) Update(args []string, result *string) error {
 	if err != nil {
 		return fmt.Errorf("parsing number failed: %s", err)
 	}
+
+	email := args[2]
+	if len(email) == 0 {
+		return fmt.Errorf("email is empty")
+	}
+
+	token := args[3]
+	if len(token) == 0 {
+		return fmt.Errorf("token is empty")
+	}
+
+	validate, err := VerifiedAccountToken(email, token)
+	if err != nil {
+		return ValidateTokenFailed
+	}
+	if validate == false {
+		return ValidateTokenFailed
+	}
+
 	err = UpdateObj(name, number)
 	if err != nil {
 		return fmt.Errorf("can't update %s with %s, error: %s", args[0], args[1], err)
@@ -71,9 +134,28 @@ func (BigNumCompute) Update(args []string, result *string) error {
 }
 
 func (BigNumCompute) Add(args []string, result *string) error {
-	if len(args) != 2 {
+	if len(args) != 4 {
 		return fmt.Errorf("argument length error, it should be [name:number] or [name1:name2]")
 	}
+
+	email := args[2]
+	if len(email) == 0 {
+		return fmt.Errorf("email is empty")
+	}
+
+	token := args[3]
+	if len(token) == 0 {
+		return fmt.Errorf("token is empty")
+	}
+
+	validate, err := VerifiedAccountToken(email, token)
+	if err != nil {
+		return ValidateTokenFailed
+	}
+	if validate == false {
+		return ValidateTokenFailed
+	}
+
 	computeResult, err := Compute(args[0], args[1], AddOp)
 	if err != nil {
 		return fmt.Errorf("can't multiply of %s and %s, error: %s", args[0], args[1], err)
@@ -83,9 +165,28 @@ func (BigNumCompute) Add(args []string, result *string) error {
 }
 
 func (BigNumCompute) Subtract(args []string, result *string) error {
-	if len(args) != 2 {
+	if len(args) != 4 {
 		return fmt.Errorf("argument length error, it should be [name:number] or [name1:name2]")
 	}
+
+	email := args[2]
+	if len(email) == 0 {
+		return fmt.Errorf("email is empty")
+	}
+
+	token := args[3]
+	if len(token) == 0 {
+		return fmt.Errorf("token is empty")
+	}
+
+	validate, err := VerifiedAccountToken(email, token)
+	if err != nil {
+		return ValidateTokenFailed
+	}
+	if validate == false {
+		return ValidateTokenFailed
+	}
+
 	computeResult, err := Compute(args[0], args[1], SubtractOp)
 	if err != nil {
 		return fmt.Errorf("can't multiply of %s and %s, error: %s", args[0], args[1], err)
@@ -95,9 +196,28 @@ func (BigNumCompute) Subtract(args []string, result *string) error {
 }
 
 func (BigNumCompute) Multiply(args []string, result *string) error {
-	if len(args) != 2 {
+	if len(args) != 4 {
 		return fmt.Errorf("argument length error, it should be [name:number] or [name1:name2]")
 	}
+
+	email := args[2]
+	if len(email) == 0 {
+		return fmt.Errorf("email is empty")
+	}
+
+	token := args[3]
+	if len(token) == 0 {
+		return fmt.Errorf("token is empty")
+	}
+
+	validate, err := VerifiedAccountToken(email, token)
+	if err != nil {
+		return ValidateTokenFailed
+	}
+	if validate == false {
+		return ValidateTokenFailed
+	}
+
 	computeResult, err := Compute(args[0], args[1], MultiplyOp)
 	if err != nil {
 		return fmt.Errorf("can't multiply of %s and %s, error: %s", args[0], args[1], err)
@@ -107,9 +227,28 @@ func (BigNumCompute) Multiply(args []string, result *string) error {
 }
 
 func (BigNumCompute) Divide(args []string, result *string) error {
-	if len(args) != 2 {
+	if len(args) != 4 {
 		return fmt.Errorf("argument length error, it should be [name:number] or [name1:name2]")
 	}
+
+	email := args[2]
+	if len(email) == 0 {
+		return fmt.Errorf("email is empty")
+	}
+
+	token := args[3]
+	if len(token) == 0 {
+		return fmt.Errorf("token is empty")
+	}
+
+	validate, err := VerifiedAccountToken(email, token)
+	if err != nil {
+		return ValidateTokenFailed
+	}
+	if validate == false {
+		return ValidateTokenFailed
+	}
+
 	computeResult, err := Compute(args[0], args[1], DivideOp)
 	if err != nil {
 		return fmt.Errorf("can't multiply of %s and %s, error: %s", args[0], args[1], err)
