@@ -26,7 +26,7 @@ func TestBigNumCompute_Create_And_Delete(t *testing.T) {
 
 	passcode := result
 	args = []string{email, passcode}
-	err = bigNumberCompute.VerifyEmail(args, &result)
+	err = bigNumberCompute.ValidateEmail(args, &result)
 	if err != nil {
 		t.Errorf(err.Error())
 		return
@@ -110,7 +110,7 @@ func TestBigNumCompute_Update(t *testing.T) {
 
 	passcode := result
 	args = []string{email, passcode}
-	err = bigNumberCompute.VerifyEmail(args, &result)
+	err = bigNumberCompute.ValidateEmail(args, &result)
 	if err != nil {
 		t.Errorf(err.Error())
 		return
@@ -187,7 +187,7 @@ func TestBigNumCompute_Add(t *testing.T) {
 
 	passcode := result
 	args = []string{email, passcode}
-	err = bigNumberCompute.VerifyEmail(args, &result)
+	err = bigNumberCompute.ValidateEmail(args, &result)
 	if err != nil {
 		t.Errorf(err.Error())
 		return
@@ -300,7 +300,7 @@ func TestBigNumCompute_Subtract(t *testing.T) {
 
 	passcode := result
 	args = []string{email, passcode}
-	err = bigNumberCompute.VerifyEmail(args, &result)
+	err = bigNumberCompute.ValidateEmail(args, &result)
 	if err != nil {
 		t.Errorf(err.Error())
 		return
@@ -412,7 +412,7 @@ func TestBigNumCompute_Multiply(t *testing.T) {
 
 	passcode := result
 	args = []string{email, passcode}
-	err = bigNumberCompute.VerifyEmail(args, &result)
+	err = bigNumberCompute.ValidateEmail(args, &result)
 	if err != nil {
 		t.Errorf(err.Error())
 		return
@@ -524,7 +524,7 @@ func TestBigNumCompute_Divide(t *testing.T) {
 
 	passcode := result
 	args = []string{email, passcode}
-	err = bigNumberCompute.VerifyEmail(args, &result)
+	err = bigNumberCompute.ValidateEmail(args, &result)
 	if err != nil {
 		t.Errorf(err.Error())
 		return
@@ -653,7 +653,7 @@ func TestBigNumCompute_CreateAccount(t *testing.T) {
 	}
 	passcode := result
 	args = []string{email, passcode}
-	err = bigNumberCompute.VerifyEmail(args, &result)
+	err = bigNumberCompute.ValidateEmail(args, &result)
 	if err != nil {
 		t.Errorf(err.Error())
 		return

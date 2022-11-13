@@ -325,7 +325,7 @@ func (BigNumCompute) CreateAccount(args []string, result *string) error {
 	return nil
 }
 
-func (BigNumCompute) VerifyEmail(args []string, result *string) error {
+func (BigNumCompute) ValidateEmail(args []string, result *string) error {
 	if len(args) != 2 {
 		return fmt.Errorf("arguments should be [email:passcode]")
 	}
