@@ -3,6 +3,7 @@ package service
 import (
 	"big_num_compute_service/config"
 	"fmt"
+	"github.com/joho/godotenv"
 	"log"
 	"math/big"
 	"testing"
@@ -10,13 +11,18 @@ import (
 
 const pesudoHashPassword = "hash"
 
-func initTest() {
+func initTest() error {
 	BigNumComputeConf, _ = config.LoadConf("")
 	if err := InitLog(); err != nil {
 		log.Fatal(err)
 	}
 	BigNumComputeConf.Core.Mode = "test"
+	err := godotenv.Load(".env_test")
+	if err != nil {
+		return err
+	}
 	InitDb()
+	return nil
 }
 
 func TestCreateAndDeleteObj(t *testing.T) {

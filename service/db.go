@@ -6,6 +6,7 @@ import (
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 	"math/big"
+	"os"
 	"strconv"
 )
 
@@ -23,14 +24,16 @@ type Account struct {
 	HashPassword string
 }
 
-const dsnDocker = "host=db user=yt password=yt dbname=big_num port=5432 sslmode=disable"
-const dsnLocalhost = "host=localhost user=yt password=yt dbname=big_num port=5432 sslmode=disable"
+const dsnDocker = "host=db user=%s password=%s dbname=big_num port=5432 sslmode=disable"
+const dsnLocalhost = "host=localhost user=%s password=%s dbname=big_num port=5432 sslmode=disable"
 
 func InitDb() {
 	var err error
-	connectCmd := dsnLocalhost
+	dbUser := os.Getenv("DB_USER")
+	dbPassword := os.Getenv("DB_USER")
+	connectCmd := fmt.Sprintf(dsnLocalhost, dbUser, dbPassword)
 	if BigNumComputeConf.Core.Mode == Docker {
-		connectCmd = dsnDocker
+		connectCmd = fmt.Sprintf(dsnDocker, dbUser, dbPassword)
 	}
 	db, err = gorm.Open(postgres.Open(connectCmd), &gorm.Config{})
 	if err != nil {
