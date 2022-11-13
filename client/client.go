@@ -41,7 +41,7 @@ func CreateAccount() {
 	}
 	passcode := data
 	args = []string{email, passcode}
-	err = conn.Call("verifyemail", args, &data)
+	err = conn.Call("validateemail", args, &data)
 	if err != nil {
 		fmt.Println("can't call rpc, reason: ", err)
 	}
