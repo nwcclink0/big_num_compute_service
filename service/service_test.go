@@ -685,3 +685,19 @@ func TestBigNumCompute_CreateAccount(t *testing.T) {
 		return
 	}
 }
+
+func TestValidateEmailFormat(t *testing.T) {
+	// empty email
+	email := ""
+	if validateEmailFormat(email) {
+		t.Errorf("empty email format still pass email format validation")
+		return
+	}
+
+	// legitimate email
+	email = "yt@mail.com"
+	if validateEmailFormat(email) == false {
+		t.Errorf("legitimate email failed to pass validation")
+		return
+	}
+}

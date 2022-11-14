@@ -4,6 +4,7 @@ import (
 	"big_num_compute_service/rpc"
 	"fmt"
 	"net"
+	"net/mail"
 	"net/smtp"
 	"os"
 
@@ -36,6 +37,9 @@ func (BigNumCompute) Create(args []string, result *string) error {
 	email := args[2]
 	if len(email) == 0 {
 		return EmailEmptyFailed
+	}
+	if validateEmailFormat(email) == false {
+		return EmailFormatFailed
 	}
 
 	token := args[3]
@@ -72,6 +76,9 @@ func (BigNumCompute) Delete(args []string, result *string) error {
 	email := args[1]
 	if len(email) == 0 {
 		return EmailEmptyFailed
+	}
+	if validateEmailFormat(email) == false {
+		return EmailFormatFailed
 	}
 
 	token := args[2]
@@ -111,6 +118,9 @@ func (BigNumCompute) Update(args []string, result *string) error {
 	if len(email) == 0 {
 		return EmailEmptyFailed
 	}
+	if validateEmailFormat(email) == false {
+		return EmailFormatFailed
+	}
 
 	token := args[3]
 	if len(token) == 0 {
@@ -141,6 +151,9 @@ func (BigNumCompute) Add(args []string, result *string) error {
 	email := args[2]
 	if len(email) == 0 {
 		return EmailEmptyFailed
+	}
+	if validateEmailFormat(email) == false {
+		return EmailFormatFailed
 	}
 
 	token := args[3]
@@ -173,6 +186,9 @@ func (BigNumCompute) Subtract(args []string, result *string) error {
 	if len(email) == 0 {
 		return EmailEmptyFailed
 	}
+	if validateEmailFormat(email) == false {
+		return EmailFormatFailed
+	}
 
 	token := args[3]
 	if len(token) == 0 {
@@ -204,6 +220,9 @@ func (BigNumCompute) Multiply(args []string, result *string) error {
 	if len(email) == 0 {
 		return EmailEmptyFailed
 	}
+	if validateEmailFormat(email) == false {
+		return EmailFormatFailed
+	}
 
 	token := args[3]
 	if len(token) == 0 {
@@ -234,6 +253,9 @@ func (BigNumCompute) Divide(args []string, result *string) error {
 	email := args[2]
 	if len(email) == 0 {
 		return EmailEmptyFailed
+	}
+	if validateEmailFormat(email) == false {
+		return EmailFormatFailed
 	}
 
 	token := args[3]
@@ -298,6 +320,9 @@ func (BigNumCompute) CreateAccount(args []string, result *string) error {
 	if len(email) == 0 {
 		return fmt.Errorf("email is empty")
 	}
+	if validateEmailFormat(email) == false {
+		return EmailFormatFailed
+	}
 	password := args[1]
 	if len(password) == 0 {
 		return fmt.Errorf("password is empty")
@@ -325,12 +350,28 @@ func (BigNumCompute) CreateAccount(args []string, result *string) error {
 	return nil
 }
 
+func validateEmailFormat(email string) bool {
+	_, err := mail.ParseAddress(email)
+	return err == nil
+}
+
 func (BigNumCompute) ValidateEmail(args []string, result *string) error {
 	if len(args) != 2 {
 		return ArgumentValidateEmailFailed
 	}
 	email := args[0]
+	if len(email) == 0 {
+		return EmailEmptyFailed
+	}
+	if validateEmailFormat(email) == false {
+		return EmailFormatFailed
+	}
+
 	passcode := args[1]
+	if len(passcode) == 0 {
+		return EmptyPassCode
+	}
+
 	success, err := VerifyAccountEmail(email, passcode)
 	if err != nil {
 		return EmailVerifyFailed
@@ -351,7 +392,17 @@ func (BigNumCompute) LoginAccount(args []string, result *string) error {
 		return ArgumentEmailPasswordFailed
 	}
 	email := args[0]
+	if len(email) == 0 {
+		return EmailEmptyFailed
+	}
+	if validateEmailFormat(email) == false {
+		return EmailFormatFailed
+	}
+
 	password := args[1]
+	if len(password) == 0 {
+		return EmptyPasswordFailed
+	}
 
 	success, err := IsAccountEmailVerified(email)
 	if err != nil {
@@ -373,7 +424,17 @@ func (BigNumCompute) DeleteAccount(args []string, result *string) error {
 		return ArgumentEmailTokenFailed
 	}
 	email := args[0]
+	if len(email) == 0 {
+		return EmailEmptyFailed
+	}
+	if validateEmailFormat(email) == false {
+		return EmailFormatFailed
+	}
+
 	token := args[1]
+	if len(token) == 0 {
+		return TokenEmptyFailed
+	}
 
 	success, err := VerifiedAccountToken(email, token)
 	if err != nil {
