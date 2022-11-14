@@ -141,7 +141,8 @@ func Compute(numberArg1 string, numberArg2 string, operation string) (float64, e
 	} else if operation == MultiplyOp {
 		newBigNumber = bigNumber1.Mul(bigNumber1, bigNumber2)
 	} else if operation == DivideOp {
-		if numberObj2.Number == 0.0 {
+		bigNum2, _ := bigNumber2.Float64()
+		if bigNum2 == 0.0 {
 			return 0, fmt.Errorf("divide by zero")
 		}
 		newBigNumber = bigNumber1.Quo(bigNumber1, bigNumber2)
