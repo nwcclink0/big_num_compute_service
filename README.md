@@ -12,7 +12,6 @@ Big number compute service is a jsonrpc service for create/update/delete number 
 
 ## Design
 
----
 ### YAML config example
 Big number compute service use config.yml to configurate service.
 example:
@@ -55,7 +54,6 @@ MAIL_SMTP_PORT=your_smtp_port
 
 ## big_num db schema
 
----
 ### *Numbers*
 
 | Name        | DataType           |
@@ -79,7 +77,6 @@ MAIL_SMTP_PORT=your_smtp_port
 
 ## Run on native machine
 
----
 
 ```
 ./build.sh native
@@ -99,14 +96,12 @@ docker compose will up and run multiple services including:
 
 ## Run big_num_compute_service
 
----
 ```
 $ big_num_compute_service -c config.yml
 ```
 
 ## Number object jsonrpc API
 
----
 
 Before operating number object related api. account token must be taken by login account.
 ### Create number object 
@@ -225,7 +220,6 @@ Response
 
 ## Account jsonrpc API
 
----
 
 ### Create account  
 *passcode mail will send to your mail box to validate your email and activate your account.*
